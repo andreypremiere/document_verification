@@ -45,6 +45,7 @@ class ImageViewer(QGraphicsView):
             if self.parent.parent.current_page in self.rectangles:
                 for item in self.rectangles[self.parent.parent.current_page]:
                     self.scene.addItem(item['group'])
+                    self.add_rect_to_top_panel(item)
         except Exception as e:
             print(e)
 
@@ -114,7 +115,7 @@ class ImageViewer(QGraphicsView):
                 print(f"Координаты: ({x}, {y}), ширина: {width}, высота: {height}")
                 print(self.current_rect.rect())
 
-                if width * height > 5000:
+                if width * height > 4000:
                     # Создаём текстовую метку с номером
                     text_item = QGraphicsTextItem(str(self.rect_counter + 1))
                     text_item.setDefaultTextColor(QColor(*self.current_color))
@@ -155,6 +156,7 @@ class ImageViewer(QGraphicsView):
             self.rectangles[self.parent.parent.current_page] = []
 
         self.rectangles[self.parent.parent.current_page].append(rect)
+        self.add_rect_to_top_panel(rect)
 
     def clear_rectangles(self):
         print(self.parent.parent.current_page)
@@ -163,6 +165,8 @@ class ImageViewer(QGraphicsView):
             if self.parent.parent.current_page in self.rectangles:
                 for item in self.rectangles[self.parent.parent.current_page]:
                     self.scene.removeItem(item['group'])
+
+            self.clear_top_panel()
         except Exception:
             print('Ошибка очистки.')
 
@@ -171,6 +175,8 @@ class ImageViewer(QGraphicsView):
         if event.key() == Qt.Key.Key_Space:
             self.space_pressed = True
             self.viewport().setCursor(Qt.CursorShape.OpenHandCursor)
+        elif event.key() == Qt.Key.Key_Delete:
+            self.delete_selected_group()
         super().keyPressEvent(event)
 
     def keyReleaseEvent(self, event):
@@ -185,6 +191,40 @@ class ImageViewer(QGraphicsView):
         g = random.randint(0, 236)
         b = random.randint(0, 230)
         return r, g, b
+
+    def add_rect_to_top_panel(self, rect):
+        self.parent.top_panel.generate_frame_icon(rect)
+
+    def clear_top_panel(self):
+        self.parent.top_panel.clear_panel()
+
+    def remove_by_group(self, group):
+        try:
+            for key, sublist in self.rectangles.items():
+                for sub in sublist:
+                    if sub['group'] == group:
+                        sublist.remove(sub)
+                        self.scene.removeItem(group)
+        except Exception as e:
+            print(f'Ошибка удаления по группе. {e}')
+        print(self.rectangles)
+
+    # def delete_selected_group(self):
+    #     """Удаляет выделенную группу и ее запись из self.rectangles."""
+    #     selected_items = self.scene.selectedItems()
+    #     if not selected_items:
+    #         return
+    #
+    #     for item in selected_items:
+    #         for key, sublist in self.rectangles.items():
+    #             for rect in sublist:
+    #                 if rect['group'] == item:
+    #                     self.scene.removeItem(item)  # Удаление из сцены
+    #                     sublist.remove(rect)  # Удаление из списка
+    #                     self.parent.top_panel.remove_by_index(rect['index'])
+    #                     break  # Прекращаем поиск, так как нашли нужный элемент
+
+        print(self.rectangles)
 
 # class MainWidget(QWidget):
 #     """Главное окно с отображением изображения."""
