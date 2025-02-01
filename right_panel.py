@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFrame, QHBoxLayout
 
+from bottom_action_panel import BottomActionPanel
 from image_widget import ImageViewer
 from sub_top_panel import SubTopPanel
 
@@ -26,7 +27,6 @@ class RightPanel(QWidget):
 
         # Верхняя панель
         self.top_panel = SubTopPanel(self)
-
         self.main_layout.addWidget(self.top_panel)
 
         # средняя панель
@@ -34,10 +34,7 @@ class RightPanel(QWidget):
         self.main_layout.addWidget(self.middle_panel)
 
         # нижняя панель
-        self.button_panel = QFrame(self)
-        self.button_panel.setStyleSheet('background-color: orange;')
-        self.button_panel_layout = QHBoxLayout(self.button_panel)
-        self.button_panel.setFixedHeight(60)
+        self.button_panel = BottomActionPanel(self)
         self.main_layout.addWidget(self.button_panel)
 
     def set_image(self, index):

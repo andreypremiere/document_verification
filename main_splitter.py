@@ -54,6 +54,7 @@ class MainSplitter(QSplitter):
         self.left_layout = QVBoxLayout(self.left_panel)
         self.left_layout.setContentsMargins(0, 0, 0, 0)
 
+        # верхняя левая панель
         self.area_top_1_frame = QFrame(self.left_panel)
         self.area_top_1_frame.setStyleSheet("""
             background-color: #FBFBFB;
@@ -109,12 +110,37 @@ class MainSplitter(QSplitter):
         self.area_top_1_layout.addWidget(self.scroll_area1)
         self.area_top_1_layout.addWidget(self.button_choosing_path, alignment=Qt.AlignmentFlag.AlignHCenter)
 
-        self.scroll_area2 = QScrollArea(self.left_panel)
+        # нижняя левая панель
+        self.area_button_frame = QFrame(self.left_panel)
+        self.area_button_frame.setStyleSheet("""
+                    background-color: #FBFBFB;
+                """)
+        self.area_button_layout = QVBoxLayout(self.area_button_frame)
+        self.area_button_layout.setContentsMargins(0, 0, 0, 0)
+        self.area_button_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.label_result = QLabel('Результаты')
+        self.label_result.setFont(QFont(get_font('Noto Sans'), 9, 400))
+        self.label_result.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.label_result.setContentsMargins(0, 10, 0, 10)
+
+        self.scroll_area2 = QScrollArea(self.area_button_frame)
         self.scroll_area2.setStyleSheet("""
-            background-color: #FBFBFB;
-        """)
+                    border: none;
+                """)
         self.scroll_area2.setWidgetResizable(True)
-        self.scroll_area2.setWidget(QLabel("Scroll area 2"))
+
+        self.widget_area2 = QWidget(self.scroll_area2)
+        self.widget_layout2 = QVBoxLayout(self.widget_area2)
+        self.widget_layout2.setContentsMargins(0, 0, 0, 0)
+        self.widget_layout2.setSpacing(3)
+        self.widget_layout2.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.widget_area2.setLayout(self.widget_layout2)
+        self.scroll_area2.setWidget(self.widget_area2)
+
+        self.area_button_layout.addWidget(self.label_result)
+        self.area_button_layout.addWidget(self.scroll_area2)
+
 
         self.panel_splitter = QSplitter(Qt.Orientation.Vertical, self.left_panel)
 
@@ -130,7 +156,7 @@ class MainSplitter(QSplitter):
             }
         # """)
         self.panel_splitter.addWidget(self.area_top_1_frame)
-        self.panel_splitter.addWidget(self.scroll_area2)
+        self.panel_splitter.addWidget(self.area_button_frame)
         self.panel_splitter.setStretchFactor(0, 1)  # Левый виджет занимает больше места
         self.panel_splitter.setStretchFactor(1, 1)  # Левый виджет занимает больше места
 
