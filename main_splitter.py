@@ -293,12 +293,52 @@ class MainSplitter(QSplitter):
         self.right_panel.set_image(self.current_page)
         self.right_panel.top_panel.set_current_page(self.current_page)
 
+    def next_file(self):
+        index = self.selected_element_index + 1
+
+        if index >= len(self.files_path):
+            return
+
+        self.open_file(index)
+
+    def prev_file(self):
+        index = self.selected_element_index - 1
+
+        if index < 0:
+            return
+
+        self.open_file(index)
+
+    def open_file(self, index):
+        if self.selected_element_index is not None and self.selected_element_index != index:
+            self.widget_layout1.itemAt(self.selected_element_index).widget().setStyleSheet(
+                """
+                QFrame {
+                    background-color: #F7F7F7;
+                    outline: none;
+                    border-radius: 0px;
+                }
+                """
+            )
+
+        self.widget_layout1.itemAt(index).widget().setStyleSheet("""
+                QFrame {
+                    background-color: #C0C0C0;
+                    }
+                """)
+        self.selected_element_index = index
+        self.open_pdf_file(index)
+        self.set_image()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_A:
             self.prev_page()
         elif event.key() == Qt.Key.Key_D:
             self.next_page()
+        elif event.key() == Qt.Key.Key_S:
+            self.next_file()
+        elif event.key() == Qt.Key.Key_W:
+            self.prev_file()
 
     def improve_image_for_ocr(self, crop):
         """ Улучшение качества изображения для OCR с адаптивной бинаризацией """

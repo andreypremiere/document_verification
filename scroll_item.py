@@ -90,26 +90,8 @@ class ScrollItem(QFrame):
 
     def mousePressEvent(self, event):
         """Обрабатываем клик по фрейму."""
-        if event.modifiers() != Qt.KeyboardModifier.ShiftModifier and self.parent.selected_element_index != self.index:
-            if self.parent.selected_element_index is not None:
-                self.parent.widget_layout1.itemAt(self.parent.selected_element_index).widget().setStyleSheet(
-                    """
-                    QFrame {
-                        background-color: #F7F7F7;
-                        outline: none;
-                        border-radius: 0px;
-                    }
-                    """
-                )
-
-            self.setStyleSheet("""
-                    QFrame {
-                        background-color: #C0C0C0;
-                        }
-                    """)
-            self.parent.selected_element_index = self.index
-            self.parent.open_pdf_file(self.index)
-            self.parent.set_image()
+        if event.modifiers() != Qt.KeyboardModifier.ShiftModifier:
+            self.open_image()
 
         if event.modifiers() == Qt.KeyboardModifier.ShiftModifier:
             range_list = range(self.parent.selected_element_index,
@@ -121,6 +103,27 @@ class ScrollItem(QFrame):
                 print('состояние переключено')
 
         super().mousePressEvent(event)
+
+    def open_image(self):
+        if self.parent.selected_element_index is not None and self.parent.selected_element_index != self.index:
+            self.parent.widget_layout1.itemAt(self.parent.selected_element_index).widget().setStyleSheet(
+                """
+                QFrame {
+                    background-color: #F7F7F7;
+                    outline: none;
+                    border-radius: 0px;
+                }
+                """
+            )
+
+        self.setStyleSheet("""
+                QFrame {
+                    background-color: #C0C0C0;
+                    }
+                """)
+        self.parent.selected_element_index = self.index
+        self.parent.open_pdf_file(self.index)
+        self.parent.set_image()
 
     def enterEvent(self, event):
         """Обрабатываем событие наведения мыши."""
