@@ -2,7 +2,8 @@ from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QIcon, QCursor
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QPushButton
 
-from task_panel import TaskPanel
+from task_frame import TaskFrame
+from task_modal import TaskModal
 
 
 class BottomActionPanel(QFrame):
@@ -25,6 +26,7 @@ class BottomActionPanel(QFrame):
         self.button_generating_task.setIcon(QIcon('icons/Icon plus.svg'))
         self.button_generating_task.setIconSize(QSize(30, 30))
         self.button_generating_task.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.button_generating_task.clicked.connect(self.add_task)
         self.button_generating_task.setStyleSheet("""
             background-color: none;
             border: 1px solid #7E7E7E;
@@ -33,7 +35,13 @@ class BottomActionPanel(QFrame):
 
         self.main_layout.addWidget(self.button_generating_task)
 
-        task_1 = TaskPanel(self)
-        self.main_layout.addWidget(task_1)
+
+    def add_task(self):
+        self.dialog_window = TaskModal(self, self.parent, 1)
+        self.dialog_window.show()
+
+        task_frame = TaskFrame(self)
+        self.main_layout.insertWidget(-2, task_frame)
+
 
 

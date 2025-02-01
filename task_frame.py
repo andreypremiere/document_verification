@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QGraphicsE
 from fonts.getting_font import get_font
 
 
-class TaskPanel(QFrame):
+class TaskFrame(QFrame):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent

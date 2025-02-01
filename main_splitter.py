@@ -21,6 +21,7 @@ class MainSplitter(QSplitter):
     """
     def __init__(self, parent):
         super().__init__(parent)
+
         self.right_panel = None
         self.images_cv2 = None
         self.widget_layout1 = None
@@ -363,8 +364,8 @@ class MainSplitter(QSplitter):
 
         return sharpened
 
-    def edit_element(self):
-        rect = self.right_panel.middle_panel.rectangles[self.current_page][-1]['rect']
+    def edit_element(self, rect):
+        # rect = self.right_panel.middle_panel.rectangles[self.current_page][-1]['rect']
         x, y, w, h = int(rect.x()), int(rect.y()), int(rect.width()), int(rect.height())
         crop = self.images_cv2[self.current_page][y:y + h, x:x + w]
 

@@ -18,7 +18,7 @@ class ImageViewer(QGraphicsView):
         self.drawing = False
         self.start_point = None
         self.current_rect = None
-        self.rectangles = {}
+        self.rectangles = []
         self.rect_counter = 0
 
         self.scene = QGraphicsScene(self)
@@ -42,8 +42,9 @@ class ImageViewer(QGraphicsView):
 
         try:
             print(self.parent.parent.current_page)
-            if self.parent.parent.current_page in self.rectangles:
-                for item in self.rectangles[self.parent.parent.current_page]:
+            cur_page = self.parent.parent.current_page
+            for item in self.rectangles:
+                if cur_page == item['page']:
                     self.scene.addItem(item['group'])
                     self.add_rect_to_top_panel(item)
         except Exception as e:
@@ -129,7 +130,8 @@ class ImageViewer(QGraphicsView):
                     group.setFlags(QGraphicsItemGroup.GraphicsItemFlag.ItemIsSelectable)
                     self.scene.addItem(group)
 
-                    val = {'index': self.rect_counter, 'rect': rect, 'group': group, 'color': self.current_color}
+                    val = {'page': self.parent.parent.current_page, 'index': self.rect_counter, 'rect': rect,
+                           'group': group, 'color': self.current_color}
 
                     self.add_rectangle(val)
                     print(self.rectangles)
@@ -137,7 +139,7 @@ class ImageViewer(QGraphicsView):
                     self.rect_counter += 1
 
                     try:
-                        self.parent.parent.edit_element()
+                        self.parent.parent.edit_element(rect)
                     except Exception as e:
                         print(e)
                 else:
@@ -149,21 +151,17 @@ class ImageViewer(QGraphicsView):
 
     def add_rectangle(self, rect):
         """Добавляет прямоугольник для текущего изображения."""
-        if self.parent.parent.current_page is None:
-            return
-
-        if self.parent.parent.current_page not in self.rectangles:
-            self.rectangles[self.parent.parent.current_page] = []
-
-        self.rectangles[self.parent.parent.current_page].append(rect)
+        self.rectangles.append(rect)
         self.add_rect_to_top_panel(rect)
+        print(self.rectangles)
 
     def clear_rectangles(self):
         print(self.parent.parent.current_page)
+        current_page = self.parent.parent.current_page
         try:
             """Удаляет текущие прямоугольники со сцены."""
-            if self.parent.parent.current_page in self.rectangles:
-                for item in self.rectangles[self.parent.parent.current_page]:
+            for item in self.rectangles:
+                if current_page == item['page']:
                     self.scene.removeItem(item['group'])
 
             self.clear_top_panel()
@@ -200,11 +198,11 @@ class ImageViewer(QGraphicsView):
 
     def remove_by_group(self, group):
         try:
-            for key, sublist in self.rectangles.items():
-                for sub in sublist:
-                    if sub['group'] == group:
-                        sublist.remove(sub)
-                        self.scene.removeItem(group)
+            for item in self.rectangles:
+                if item['group'] == group:
+                    self.scene.removeItem(item['group'])
+                    self.rectangles.remove(item)
+
         except Exception as e:
             print(f'Ошибка удаления по группе. {e}')
         print(self.rectangles)

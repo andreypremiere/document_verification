@@ -33,9 +33,5 @@ class RightPanel(QWidget):
         self.middle_panel = ImageViewer(self)
         self.main_layout.addWidget(self.middle_panel)
 
-        # нижняя панель
-        self.button_panel = BottomActionPanel(self)
-        self.main_layout.addWidget(self.button_panel)
-
     def set_image(self, index):
         self.middle_panel.set_image(self.parent.images_cv2[index])
